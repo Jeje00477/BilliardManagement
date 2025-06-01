@@ -1,3 +1,6 @@
+package Model;
+
+import Model.Pelanggan;
 import java.time.LocalDateTime;
 
 public class Booking {

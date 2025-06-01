@@ -1,7 +1,6 @@
 package GUI;
 
-import Services.UserService;
-import Services.AdminService;
+import Services.KaryawanService;
 import java.sql.*;
 import javax.swing.JOptionPane;
 
@@ -19,31 +18,19 @@ public class LoginForm extends javax.swing.JFrame {
     /**
      * Creates new form Login
      */
-    private UserService Uservice;
-    private AdminService Aservice;
-    private boolean Admin;
+    private KaryawanService Kservice;
     public LoginForm() throws SQLException{
         initComponents();
-        Uservice = new UserService();
-        Aservice = new AdminService();
+        Kservice = new KaryawanService();
         setVisible(true);
     }
     
-    boolean getAdmin(){
-        return Admin;
-    }
     
     public void login()throws SQLException{
-        if(Aservice.Login(usernameTextField.getText(), PasswordTextField.getText())){
+        if(Kservice.Login(usernameTextField.getText(), PasswordTextField.getText())){
             JOptionPane.showMessageDialog(this, "Login Successful");
-            Admin = true;
-            new TransactionForm(usernameTextField.getText(), this);
             dispose();
-        }else if (Uservice.Login(usernameTextField.getText(), PasswordTextField.getText())){
-            JOptionPane.showMessageDialog(this, "Login Successful");
-            Admin = false;
-            new TransactionForm(usernameTextField.getText(), this);
-            dispose();
+            new MainApp().setVisible(true);
         }
         else{
             JOptionPane.showMessageDialog(this, "Login Failed");
@@ -71,7 +58,6 @@ public class LoginForm extends javax.swing.JFrame {
         PassLabel = new javax.swing.JLabel();
         PasswordTextField = new javax.swing.JPasswordField();
         LoginButton = new javax.swing.JButton();
-        RegisterButton = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -162,18 +148,6 @@ public class LoginForm extends javax.swing.JFrame {
             }
         });
 
-        RegisterButton.setBackground(new java.awt.Color(255, 102, 0));
-        RegisterButton.setFont(new java.awt.Font("Segoe UI Semibold", 0, 14)); // NOI18N
-        RegisterButton.setForeground(new java.awt.Color(255, 255, 255));
-        RegisterButton.setText("Register");
-        RegisterButton.setBorderPainted(false);
-        RegisterButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        RegisterButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RegisterButtonActionPerformed(evt);
-            }
-        });
-
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -193,10 +167,8 @@ public class LoginForm extends javax.swing.JFrame {
                             .addComponent(usernameTextField))
                         .addGap(41, 41, 41))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(RegisterButton, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(LoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addComponent(LoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 41, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -229,9 +201,7 @@ public class LoginForm extends javax.swing.JFrame {
                     .addComponent(PasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(56, 56, 56)
                 .addComponent(LoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(RegisterButton)
-                .addContainerGap(109, Short.MAX_VALUE))
+                .addContainerGap(142, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
                     .addGap(208, 208, 208)
@@ -267,16 +237,6 @@ public class LoginForm extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_CloseLabelMouseClicked
 
-    private void RegisterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegisterButtonActionPerformed
-        try{
-            new RegisterForm();
-            dispose();
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-        
-    }//GEN-LAST:event_RegisterButtonActionPerformed
-
     private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
         try{
             login();
@@ -293,7 +253,6 @@ public class LoginForm extends javax.swing.JFrame {
     private javax.swing.JLabel MinimizeLabel;
     private javax.swing.JLabel PassLabel;
     private javax.swing.JPasswordField PasswordTextField;
-    private javax.swing.JButton RegisterButton;
     private javax.swing.JLabel UsernameLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

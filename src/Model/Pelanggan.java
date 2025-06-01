@@ -1,3 +1,5 @@
+package Model;
+
 public class Pelanggan {
     private String nama;
     private String nomorTelepon;
