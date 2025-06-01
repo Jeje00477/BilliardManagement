@@ -1,6 +1,7 @@
 package GUI;
 
-import Services.KaryawanService;
+import Services.UserService;
+import Services.AdminService;
 import java.sql.*;
 import javax.swing.JOptionPane;
 
@@ -18,11 +19,13 @@ public class LoginForm extends javax.swing.JFrame {
     /**
      * Creates new form Login
      */
-    private KaryawanService Kservice;
+    private UserService Uservice;
+    private AdminService Aservice;
     private boolean Admin;
     public LoginForm() throws SQLException{
         initComponents();
-        Kservice = new KaryawanService();
+        Uservice = new UserService();
+        Aservice = new AdminService();
         setVisible(true);
     }
     
@@ -31,7 +34,7 @@ public class LoginForm extends javax.swing.JFrame {
     }
     
     public void login()throws SQLException{
-        if(Kservice.Login(usernameTextField.getText(), PasswordTextField.getText())){
+        if(Aservice.Login(usernameTextField.getText(), PasswordTextField.getText())){
             JOptionPane.showMessageDialog(this, "Login Successful");
             Admin = true;
             new TransactionForm(usernameTextField.getText(), this);
