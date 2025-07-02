@@ -2,6 +2,7 @@ package GUI;
 
 import Model.Booking;
 import Model.Pelanggan;
+import Model.Transaksi;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.sql.Timestamp;
 
 
 
@@ -19,6 +21,9 @@ public class MainApp extends JFrame {
     private JComboBox<String> cbTipeMeja;
     private JTextArea taOutput;
     private java.util.List<Booking> bookings = new ArrayList<>();
+    private Services.PelangganService pelangganService = new Services.PelangganService();
+    private Services.TransaksiService transaksiService = new Services.TransaksiService();
+
 
     public MainApp() {
         setTitle("Sistem Booking Meja Billiard");
@@ -99,25 +104,44 @@ public class MainApp extends JFrame {
     }
 
     private void simpanBooking() {
-        String nama = tfNama.getText().trim();
-        String telepon = tfNomorTelepon.getText().trim();
-        Date date = (Date) spTanggal.getValue();
-        LocalDateTime tanggal = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        int nomorMeja = (int) cbNomorMeja.getSelectedItem();
-        String tipeMeja = (String) cbTipeMeja.getSelectedItem();
+    String nama = tfNama.getText().trim();
+    String telepon = tfNomorTelepon.getText().trim();
+    Date date = (Date) spTanggal.getValue();
+    Timestamp timestamp = new Timestamp(date.getTime());
 
-        if (nama.isEmpty() || telepon.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Nama dan telepon wajib diisi!");
-            return;
-        }
+    int nomorMeja = (int) cbNomorMeja.getSelectedItem();
+    String tipeMeja = (String) cbTipeMeja.getSelectedItem();
 
+    if (nama.isEmpty() || telepon.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Nama dan telepon wajib diisi!");
+        return;
+    }
+
+    try {
         Pelanggan pelanggan = new Pelanggan(nama, telepon);
-        Booking booking = new Booking(pelanggan, tanggal, nomorMeja, tipeMeja);
-        bookings.add(booking);
-        JOptionPane.showMessageDialog(this, "Booking berhasil disimpan untuk " + nama);
+        int idPelanggan = pelangganService.tambahPelanggan(pelanggan);
+
+        // Transaksi
+        Transaksi transaksi = new Transaksi();
+        transaksi.setIdPelanggan(idPelanggan);
+        transaksi.setNoMeja(nomorMeja);
+        transaksi.setWaktuMulai(timestamp);
+        transaksi.setWaktuSelesai(null); // Diisi nanti
+        transaksi.setTotalBiaya(0); // Diisi nanti
+        transaksi.setIdKaryawan(1); // Contoh: Karyawan login ID 1
+        transaksi.setIdLayanan(1);  // Layanan default
+        transaksi.setIdPembayaran(1); // Dummy pembayaran
+
+        transaksiService.tambahTransaksi(transaksi);
+
+        JOptionPane.showMessageDialog(this, "Booking berhasil disimpan!");
         tfNama.setText("");
         tfNomorTelepon.setText("");
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Gagal menyimpan booking.");
     }
+}
 
     private void cariBooking() {
         String keyword = tfCari.getText().trim().toLowerCase();
